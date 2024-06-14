@@ -4,7 +4,7 @@
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import {getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider} from 'firebase/auth'
+import {getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth'
 
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
 
@@ -36,7 +36,7 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 
 export const db = getFirestore();
 
-export const createUserDocumentFromAuth = async (userAuth) =>{
+export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) =>{
     /**
      * This method get the user's document reference. (Non relational data base)
      * database, collections, identifier(user's unique ID)
@@ -55,7 +55,8 @@ export const createUserDocumentFromAuth = async (userAuth) =>{
             await setDoc(userDocRef, {
                 displayName,
                 email,
-                createdAt
+                createdAt,
+                ...additionalInformation
             })
         }catch(error){
             console.log('error creating the user', error.message)
@@ -65,4 +66,32 @@ export const createUserDocumentFromAuth = async (userAuth) =>{
     return userDocRef;
 
 
+}
+
+/**
+ * Sing In with redirect
+ */
+
+/** There are many provdiers to authenticate such as Google, Fb, gitgub. In this case we pass google as provider */
+export const signInWithGoogleRedirect = () => signInWithRedirect(auth, provider);
+
+
+
+
+/**
+ * Create user with email and password
+ */
+
+export const createAuthUserWithEmailAndPassword = async (email,password) =>{
+    if(!email || !password) return;
+    return await createUserWithEmailAndPassword(auth,email,password);
+}
+
+/**
+ * Sing in with email and password
+ */
+
+export const signInAuthUserWithEmailAndPassword = async (email,password) =>{
+    if(!email || !password) return;
+    return await signInWithEmailAndPassword(auth,email,password);
 }
