@@ -4,7 +4,7 @@
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import {getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth'
+import {getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged} from 'firebase/auth'
 
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
 
@@ -95,3 +95,20 @@ export const signInAuthUserWithEmailAndPassword = async (email,password) =>{
     if(!email || !password) return;
     return await signInWithEmailAndPassword(auth,email,password);
 }
+
+/**
+ * SING OUT
+ */
+
+export const signOUtUser = async () => await signOut(auth);
+
+/**
+ * Observable listener
+ * It returns you back whatever you get back from on AuthStateChanged
+ * It takes to parameters, auth and callback
+ * Some callabck that you want to call every time this auth changes
+ * 
+ * onAuthStateChanged -> always is listenning for a change
+ */
+
+export const onAuthStateChangedListener = (callabck) => onAuthStateChanged(auth, callabck);

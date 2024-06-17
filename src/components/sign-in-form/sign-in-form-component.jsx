@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth, signInAuthUserWithEmailAndPassword, signInWithGooglePopup } from "../../utils/firebase/firebase.utils";
+import { useState, } from "react";
+import { createUserDocumentFromAuth, signInAuthUserWithEmailAndPassword, signInWithGooglePopup } from "../../utils/firebase/firebase.utils";
 import './sign-in-form.styles.scss'
 import Button from "../button/button.component";
 import FormInput from "../form-input/form-input.component";
@@ -10,7 +10,6 @@ const defaultFormFields = {
 };
 
 const SignInForm = () => {
-
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { email, password } = formFields;
 
@@ -18,10 +17,10 @@ const SignInForm = () => {
         setFormFields(defaultFormFields);
     };
 
+
     const signInWithGoogle = async () => {
-        //destruturing the response
-        const { user } = await signInWithGooglePopup();
-        await createUserDocumentFromAuth(user);
+        await signInWithGooglePopup();
+        
     }
 
     const handleSubmit = async (event) => {
@@ -29,11 +28,11 @@ const SignInForm = () => {
 
 
         try {
-            const response = signInAuthUserWithEmailAndPassword(email, password);
-            console.log(response)
+            const { user } = await signInAuthUserWithEmailAndPassword(email, password);
             resetFormFields();
+            
         } catch (error) {
-            switch(error.code){
+            switch (error.code) {
                 case "auth/wrong-password":
                     alert('incorrect password for email');
                     break;
@@ -59,9 +58,9 @@ const SignInForm = () => {
             <h2>Already have an account?</h2>
             <span>sign up with your email and password</span>
             <form onSubmit={handleSubmit}>
-                <FormInput label="Email" type="email"  required onChange={handleChange} name="email" value={email}/>
+                <FormInput label="Email" type="email" required onChange={handleChange} name="email" value={email} />
 
-                <FormInput label="Password" type="password" required onChange={handleChange} name="password" value={password}/>
+                <FormInput label="Password" type="password" required onChange={handleChange} name="password" value={password} />
 
                 <div className="buttons-container">
                     <Button type="submit">Sign In</Button>

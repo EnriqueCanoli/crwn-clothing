@@ -13,7 +13,7 @@ const defaultFormFields = {
 };
 
 const SignUpForm = () => {
-
+    
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { displayName, email, password, confirmPassword } = formFields;
 
@@ -61,9 +61,9 @@ const SignUpForm = () => {
 
                 <FormInput label="Email" type="email" required onChange={handleChange} name="email" value={email} />
 
-                <FormInput label="Passord" required onChange={handleChange} name="password" value={password} />
+                <FormInput label="Passord" type="password" required onChange={handleChange} name="password" value={password} />
 
-                <FormInput label="Confirm passowrd" required onChange={handleChange} name="confirmPassword" value={confirmPassword}/>
+                <FormInput label="Confirm passowrd" type="password" required onChange={handleChange} name="confirmPassword" value={confirmPassword}/>
 
                 <Button buttonType='inverted' type="submit">Sign up</Button>
             </form>
