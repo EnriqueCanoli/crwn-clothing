@@ -4,9 +4,12 @@
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import {getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged} from 'firebase/auth'
+import {
+    getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider,
+    createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged
+} from 'firebase/auth'
 
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
+import { getFirestore, doc, getDoc, setDoc, collection, writeBatch, query, getDocs } from 'firebase/firestore'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -36,7 +39,66 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 
 export const db = getFirestore();
 
-export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) =>{
+//parameters, colection name, actual document to add
+export const addCollectionAndDocuments = async (collectionKey, objetsToAdd) => {
+    //go to the database and get the collection
+    const collectionRef = collection(db, collectionKey);
+
+    //save objets into the collection
+
+    //intialize the batch
+    //batch allows you to gather multiple items before you proceed
+    const batch = writeBatch(db);
+
+    objetsToAdd.forEach((Object) => {
+        const docRef = doc(collectionRef, Object.title.toLowerCase())
+        batch.set(docRef, Object);
+    })
+
+    /**
+     * The commit method is called on the batch to execute all the queued operations.
+     *  This is an atomic operation, meaning all the changes will be applied together. 
+     * If any operation fails, none of the changes will be applied.
+     */
+
+    await batch.commit();
+    console.log("done");
+
+}
+
+/**get the categories with their objects */
+export const getCategoriesAndDocuemnts = async () => {
+    /**
+     * This creates a reference to the 'categories' collection in Firestore.
+     */
+    const collectionRef = collection(db, 'categories');
+    /**
+     * Creates a query object for the 'categories' collection.
+     *  This query object can be used to specify filters or constraints on the documents retrieved, although in this case, 
+     * it simply points to the entire collection.
+     */
+    const q = query(collectionRef);
+
+    /**
+     * Executes the query and retrieves a snapshot of the collection's documents. 
+     * The getDocs function returns a querySnapshot containing all the documents matching the query.
+     */
+    const querySnapshot = await getDocs(q);
+    /**
+     * It uses the reduce method to iterate over all documents and accumulate them into an object 
+     * For each document snapshot (docSnapshot), it extracts the title and items from the document data.
+     * It converts the title to lowercase and uses it as a key in the categoryMap object, with the corresponding items as the value.
+     */
+    const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+        const { title, items } = docSnapshot.data();
+        acc[title.toLowerCase()] = items;
+        return acc;
+    }, {});
+
+    return categoryMap;
+}
+
+export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) => {
     /**
      * This method get the user's document reference. (Non relational data base)
      * database, collections, identifier(user's unique ID)
@@ -47,18 +109,18 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
     /*Get the data related to a docuemnt*/
     const userSnapShot = await getDoc(userDocRef);
 
-    if(!userSnapShot.exists()){ //if not exist, create the user
-        const {displayName, email} = userAuth;
+    if (!userSnapShot.exists()) { //if not exist, create the user
+        const { displayName, email } = userAuth;
         const createdAt = new Date();
 
-        try{
+        try {
             await setDoc(userDocRef, {
                 displayName,
                 email,
                 createdAt,
                 ...additionalInformation
             })
-        }catch(error){
+        } catch (error) {
             console.log('error creating the user', error.message)
         }
     }
@@ -82,18 +144,18 @@ export const signInWithGoogleRedirect = () => signInWithRedirect(auth, provider)
  * Create user with email and password
  */
 
-export const createAuthUserWithEmailAndPassword = async (email,password) =>{
-    if(!email || !password) return;
-    return await createUserWithEmailAndPassword(auth,email,password);
+export const createAuthUserWithEmailAndPassword = async (email, password) => {
+    if (!email || !password) return;
+    return await createUserWithEmailAndPassword(auth, email, password);
 }
 
 /**
  * Sing in with email and password
  */
 
-export const signInAuthUserWithEmailAndPassword = async (email,password) =>{
-    if(!email || !password) return;
-    return await signInWithEmailAndPassword(auth,email,password);
+export const signInAuthUserWithEmailAndPassword = async (email, password) => {
+    if (!email || !password) return;
+    return await signInWithEmailAndPassword(auth, email, password);
 }
 
 /**
