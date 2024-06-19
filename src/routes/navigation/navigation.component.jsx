@@ -1,48 +1,46 @@
 import { Fragment, useContext } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, NavLink } from "react-router-dom";
 import { ReactComponent as CrwnLogo } from '../../assets/crown.svg'
-import './navigation.styles.scss'
+
 import CartIcon from '../../components/cart-icon/cart-icon.component'
 import CartDropdwon from "../../components/cart-dropdown/cart-dropdown.component";
 import { UserContext } from "../../contexts/user.context";
 import { signOUtUser } from "../../utils/firebase/firebase.utils";
-import { CartContext} from "../../contexts/cart.context";
+import { CartContext } from "../../contexts/cart.context";
 
+import { LogoContainer, NavLinks, NavigationContainer } from './navigation.styles.jsx'
 
 const Navigation = () => {
     console.log("nav");
     /**Here I want the user value , not the setter*/
     const { currentUser } = useContext(UserContext);
 
-    const {isCartOpen} = useContext(CartContext)
+    const { isCartOpen } = useContext(CartContext)
 
-    const singOutHandler = async () => {
+    const signOutUser = async () => {
         await signOUtUser();
     }
 
     return (
         <Fragment>
-            <div className="navigation">
-                <Link className="logo-container" to='/'>
-                    <CrwnLogo className="logo" />
-                </Link>
-                <div className="nav-links-container">
-                    <Link className="nav-link" to='/shop'>
-                        SHOP
-                    </Link>
-                    {
-                        currentUser ? (
-                            <span className="nav-link" onClick={singOutHandler}>SIGN OUT</span>
-                        ) : (
-                            <Link className="nav-link" to='/auth'>
-                                SIGN IN
-                            </Link>
-                        )
-                    }
+            <NavigationContainer>
+                <LogoContainer to='/'>
+                    <CrwnLogo />
+                </LogoContainer>
+                <NavLinks>
+                    <NavLink to='/shop'>SHOP</NavLink>
+
+                    {currentUser ? (
+                        <NavLink as='span' onClick={signOutUser}>
+                            SIGN OUT
+                        </NavLink>
+                    ) : (
+                        <NavLink to='/auth'>SIGN IN</NavLink>
+                    )}
                     <CartIcon />
-                </div>
-                {isCartOpen && <CartDropdwon />}     
-            </div>
+                </NavLinks>
+                {isCartOpen && <CartDropdwon />}
+            </NavigationContainer>
             <Outlet />
         </Fragment>
     )
