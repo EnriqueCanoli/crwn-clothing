@@ -10,6 +10,13 @@ export const BUTTON_TYPE_CLASSES = {
     inverted: 'inverted'
 }
 
+/**This is an example of using an object in JS with dynamic keys.
+ * [] this notatio, in JS allows you to use the value of a variable as the key in an object
+ * [buttonType] is used to access the value in this object using the key stored in the buttonType
+ * An arrow function with an expression directly after the arrow, it implicitly returns the result of that expression.
+ * This is called an implicit return.
+ */
+
 const getButton = (buttonType = BUTTON_TYPE_CLASSES.base) => 
     ({
         [BUTTON_TYPE_CLASSES.base]: BaseButton,
