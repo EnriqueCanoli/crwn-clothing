@@ -84,18 +84,9 @@ export const getCategoriesAndDocuemnts = async () => {
      * The getDocs function returns a querySnapshot containing all the documents matching the query.
      */
     const querySnapshot = await getDocs(q);
-    /**
-     * It uses the reduce method to iterate over all documents and accumulate them into an object 
-     * For each document snapshot (docSnapshot), it extracts the title and items from the document data.
-     * It converts the title to lowercase and uses it as a key in the categoryMap object, with the corresponding items as the value.
-     */
-    const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
-        const { title, items } = docSnapshot.data();
-        acc[title.toLowerCase()] = items;
-        return acc;
-    }, {});
-
-    return categoryMap;
+    
+    return  querySnapshot.docs.map(docSnapshot => docSnapshot.data()) //this give us the category as an array
+    
 }
 
 export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) => {

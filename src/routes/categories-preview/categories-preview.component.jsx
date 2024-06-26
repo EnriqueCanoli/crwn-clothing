@@ -3,6 +3,7 @@ import { selectCategoriesMap } from '../../store/categories/category.selector';
 import { useSelector } from 'react-redux';
 
 const CategoriesPreview = () => {
+    //get the data
     const categoriesMap = useSelector(selectCategoriesMap);
 
     return (

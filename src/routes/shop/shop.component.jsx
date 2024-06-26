@@ -4,18 +4,21 @@ import './shop.styles.scss'
 import Category from '../category/category.compoent';
 import { useEffect } from 'react';
 import { getCategoriesAndDocuemnts } from '../../utils/firebase/firebase.utils';
-import {setCategoriesMap} from '../../store/categories/category.action'
+import {setCategories} from '../../store/categories/category.action'
 import { useDispatch } from 'react-redux';
 
 /**
  * CategoriesPreview and Category, both needs the categoryMap(categoriesReducer), so the nearest ancestor is the shop component  
  */
 const Shop = () => {
+    
     const dispatch = useDispatch();
+
     useEffect(() => {
         const getCategoriesMap = async () => {
-            const categoryMap = await getCategoriesAndDocuemnts();
-            dispatch(setCategoriesMap(categoryMap));
+            const categoriesArray = await getCategoriesAndDocuemnts();
+            //sends this action object to redux store
+            dispatch(setCategories(categoriesArray));
         };
 
         getCategoriesMap();

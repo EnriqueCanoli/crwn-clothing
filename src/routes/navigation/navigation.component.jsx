@@ -15,6 +15,7 @@ import { selectCurrentUser } from "../../store/user/user.selector.js";
  * it is a hook that allow us to interact from a component with the redux store
  */
 import { useSelector } from "react-redux";
+import { selectIsCartOpen } from "../../store/cart/cart.selector.js";
 
 const Navigation = () => {
     /**
@@ -22,8 +23,9 @@ const Navigation = () => {
      */
     const currentUser =  useSelector(selectCurrentUser)
 
-    const { isCartOpen } = useContext(CartContext)
-
+   // const { isCartOpen } = useContext(CartContext)
+    const isCartOpen = useSelector(selectIsCartOpen);
+    
     return (
         <Fragment>
             <NavigationContainer>
